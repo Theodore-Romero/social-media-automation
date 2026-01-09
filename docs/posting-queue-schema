@@ -1,27 +1,57 @@
 # Posting Queue Schema
 
-This document defines the required columns in the Google Sheets “Posting Queue” tab.
+This document defines the required structure for the Google Sheets tab named **Posting Queue** used by the Medical Spa Social Media Automation workflow.
+
+Each row represents a single social media post to be published.
 
 ---
 
 ## Required Columns
 
-| Column | Type | Description |
-|-------|------|-------------|
-| row_number | number | Unique row identifier used for updates |
-| Status | string | Workflow state: Pending / Posted / Errored |
-| Media URL | string | Google Drive share link to image/video |
-| Title | string | Optional title for internal reference |
-| Caption | string | Post caption text |
-| Platforms | string | Optional list (comma-separated) |
-| Posted At | string | ISO timestamp written when posted |
-| Error Message | string | Optional error capture |
-| Approved By | string | Optional reviewer name |
+| Column Name | Type | Description |
+|------------|------|-------------|
+| row_number | Number | Unique row identifier used by the workflow when updating the sheet |
+| Status | Text | Current processing state of the row |
+| Media URL | Text | Google Drive share link to the image or video |
+| Title | Text | Optional internal reference title |
+| Caption | Text | Caption text for the social post |
+| Platforms | Text | Optional comma-separated list of target platforms |
+| Posted At | Text | Timestamp written when the post is successfully published |
+| Error Message | Text | Error details written if posting fails |
+| Approved By | Text | Optional reviewer or approver name |
 
 ---
 
 ## Status Values
 
-- **Pending** (recommended for items awaiting post)
-- **Posted** (set by workflow on success)
-- **Errored** (set by workflow on failure)
+The **Status** column supports the following values:
+
+- **Pending**  
+  Used for items waiting to be posted.
+
+- **Posted**  
+  Set automatically by the workflow after a successful post.
+
+- **Errored**  
+  Set automatically by the workflow if posting fails.
+
+---
+
+## Processing Rules
+
+- Only rows with `Status = Pending` are eligible for posting.
+- The workflow processes one row per scheduled run.
+- After a successful post:
+  - `Status` is updated to **Posted**
+  - `Posted At` is populated with a timestamp
+- If an error occurs:
+  - `Status` is updated to **Errored**
+  - `Error Message` is populated with failure details
+
+---
+
+## Notes
+
+- Google Drive links must be accessible to the workflow account.
+- Media type must meet platform requirements (image or video).
+- This sheet acts as the system of record for posting history.
