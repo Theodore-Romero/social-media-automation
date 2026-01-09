@@ -1,57 +1,93 @@
-# Posting Queue Schema
+# Posting Queue Schema — Medical Spa Social Media Automation
 
-This document defines the required structure for the Google Sheets tab named **Posting Queue** used by the Medical Spa Social Media Automation workflow.
+This document defines the structure and rules for the Google Sheets tab named **Posting Queue**.
 
-Each row represents a single social media post to be published.
+The Posting Queue acts as the **system of record** for all scheduled social media posts processed by the automation.
 
 ---
 
-## Required Columns
+## Overview
 
-| Column Name | Type | Description |
-|------------|------|-------------|
-| row_number | Number | Unique row identifier used by the workflow when updating the sheet |
-| Status | Text | Current processing state of the row |
-| Media URL | Text | Google Drive share link to the image or video |
-| Title | Text | Optional internal reference title |
+- Each row represents **one social media post**
+- The workflow processes **one row per run**
+- Only rows marked **Pending** are eligible for posting
+- The workflow updates status fields automatically
+
+---
+
+## Step 1: Required Columns
+
+The **Posting Queue** sheet must contain the following columns.
+
+| Column Name | Type | Purpose |
+|------------|------|---------|
+| row_number | Number | Unique row identifier used when updating the sheet |
+| Status | Text | Current processing state of the post |
+| Media URL | Text | Google Drive share link to image or video |
 | Caption | Text | Caption text for the social post |
+| Title | Text | Optional internal reference title |
 | Platforms | Text | Optional comma-separated list of target platforms |
-| Posted At | Text | Timestamp written when the post is successfully published |
+| Posted At | Text | Timestamp written after successful posting |
 | Error Message | Text | Error details written if posting fails |
 | Approved By | Text | Optional reviewer or approver name |
 
 ---
 
-## Status Values
+## Step 2: Status Values
 
-The **Status** column supports the following values:
+The **Status** column controls workflow behavior.
+
+### Supported Values
 
 - **Pending**  
-  Used for items waiting to be posted.
+  Indicates the post is ready to be published.  
+  Only rows with this status will be processed.
 
 - **Posted**  
-  Set automatically by the workflow after a successful post.
+  Set automatically by the workflow after a successful post.  
+  A timestamp is written to **Posted At**.
 
 - **Errored**  
-  Set automatically by the workflow if posting fails.
+  Set automatically if posting fails.  
+  Failure details are written to **Error Message**.
 
 ---
 
-## Processing Rules
+## Step 3: Processing Rules
 
-- Only rows with `Status = Pending` are eligible for posting.
-- The workflow processes one row per scheduled run.
-- After a successful post:
-  - `Status` is updated to **Posted**
-  - `Posted At` is populated with a timestamp
-- If an error occurs:
-  - `Status` is updated to **Errored**
-  - `Error Message` is populated with failure details
+The workflow follows these rules when reading from the Posting Queue:
+
+- Rows are processed **one at a time**
+- Rows are selected based on `Status = Pending`
+- The workflow does **not** retry errored rows automatically
+- Failed rows do not block future scheduled runs
+
+---
+
+## Step 4: Media Requirements
+
+- Media must be hosted on **Google Drive**
+- The Media URL must be a valid share link
+- The file must be accessible to the workflow account
+- Supported media types depend on platform requirements
+
+The workflow extracts the Drive file ID and downloads the asset automatically.
+
+---
+
+## Step 5: Data Ownership
+
+- The Google Sheet is the **source of truth**
+- Workflow writes are limited to:
+  - `Status`
+  - `Posted At`
+  - `Error Message`
+- Manual edits should only be made before posting
 
 ---
 
 ## Notes
 
-- Google Drive links must be accessible to the workflow account.
-- Media type must meet platform requirements (image or video).
-- This sheet acts as the system of record for posting history.
+- Column names are **case-sensitive**
+- Additional columns may exist but are ignored by the workflow
+- This schema is designed for clarity, traceability, and auditability
