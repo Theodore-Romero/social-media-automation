@@ -1,23 +1,32 @@
 # Posting Queue Schema — Medical Spa Social Media Automation
 
-This document defines the structure and rules for the Google Sheets tab named **Posting Queue**.
+This document defines the structure, constraints, and processing rules for the Google Sheets tab named **Posting Queue**.
 
-The Posting Queue acts as the **system of record** for all scheduled social media posts processed by the automation.
+It serves as the authoritative data contract used by the automation workflow.
 
 ---
 
-## Overview
+## Purpose
 
-- Each row represents **one social media post**
-- The workflow processes **one row per run**
-- Only rows marked **Pending** are eligible for posting
-- The workflow updates status fields automatically
+The Posting Queue spreadsheet acts as the **system of record** for all scheduled social media posts.
+
+Each row represents a single post and progresses through defined processing states as it moves through the workflow.
+
+---
+
+## How This Schema Is Used
+
+- The workflow reads **one row per run**
+- Only rows marked **Pending** are eligible for processing
+- Status fields are updated automatically by the workflow
+- The spreadsheet maintains a complete posting history
 
 ---
 
 ## Step 1: Required Columns
 
 The **Posting Queue** sheet must contain the following columns.
+
 
 | Column Name | Type | Purpose |
 |------------|------|---------|
