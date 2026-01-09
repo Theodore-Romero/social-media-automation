@@ -1,0 +1,27 @@
+# Posting Queue Schema
+
+This document defines the required columns in the Google Sheets “Posting Queue” tab.
+
+---
+
+## Required Columns
+
+| Column | Type | Description |
+|-------|------|-------------|
+| row_number | number | Unique row identifier used for updates |
+| Status | string | Workflow state: Pending / Posted / Errored |
+| Media URL | string | Google Drive share link to image/video |
+| Title | string | Optional title for internal reference |
+| Caption | string | Post caption text |
+| Platforms | string | Optional list (comma-separated) |
+| Posted At | string | ISO timestamp written when posted |
+| Error Message | string | Optional error capture |
+| Approved By | string | Optional reviewer name |
+
+---
+
+## Status Values
+
+- **Pending** (recommended for items awaiting post)
+- **Posted** (set by workflow on success)
+- **Errored** (set by workflow on failure)
