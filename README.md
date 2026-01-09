@@ -103,7 +103,7 @@ medical-spa-social-automation/
 
 └── screenshots/
 
-├── workflow-overview.png
+├── n8n-social-media-workflow.png
 
 ---
 
